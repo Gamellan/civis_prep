@@ -6,6 +6,7 @@ import '../models/exam_type.dart';
 import '../models/question_model.dart';
 import '../services/content_service.dart';
 import '../services/mock_exam_session_service.dart';
+import '../l10n/app_localizations.dart';
 import 'dele_practice_screen.dart';
 import 'dele_section_screen.dart';
 import 'listening_practice_screen.dart';
@@ -51,6 +52,7 @@ class ExamCategoryScreen extends StatelessWidget {
   }
 
   Future<void> _openMockModeSelector(BuildContext context) async {
+    final strings = AppLocalizations.of(context);
     final hasQuickSession = await _hasSavedSession(MockExamMode.quick);
     final hasOfficialSession = await _hasSavedSession(MockExamMode.official);
 
@@ -65,12 +67,12 @@ class ExamCategoryScreen extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Selecciona modo de simulacro', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                Text(strings.translate('selectionMode'), style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                 const SizedBox(height: 12),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Rápido'),
-                  subtitle: const Text('10 preguntas · 15 minutos'),
+                  title: Text(strings.translate('quick')),
+                  subtitle: Text(strings.translate('quickModeSubtitle')),
                   trailing: const Icon(Icons.bolt_rounded),
                   onTap: () async {
                     if (!sheetContext.mounted) return;
@@ -96,14 +98,14 @@ class ExamCategoryScreen extends StatelessWidget {
                         );
                       },
                       icon: const Icon(Icons.restore_rounded),
-                      label: const Text('Reanudar rápido'),
+                      label: Text(strings.translate('resumeQuick')),
                     ),
                   ),
                 const Divider(height: 12),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
-                  title: const Text('Oficial CCSE'),
-                  subtitle: const Text('25 preguntas · 45 minutos'),
+                  title: Text(strings.translate('officialCcse')),
+                  subtitle: Text(strings.translate('officialModeSubtitle')),
                   trailing: const Icon(Icons.verified_rounded),
                   onTap: () async {
                     if (!sheetContext.mounted) return;
@@ -129,7 +131,7 @@ class ExamCategoryScreen extends StatelessWidget {
                         );
                       },
                       icon: const Icon(Icons.restore_rounded),
-                      label: const Text('Reanudar oficial'),
+                      label: Text(strings.translate('resumeOfficial')),
                     ),
                   ),
               ],
@@ -142,17 +144,18 @@ class ExamCategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     final isCcse = examType.isCcse;
     final options = isCcse
         ? [
             (
-              title: 'Simulacro CCSE',
+              title: strings.translate('mockExam') + ' CCSE',
               onTap: () => _openMockModeSelector(context)
             ),
           ]
         : [
             (
-              title: 'Práctica por prueba',
+              title: strings.translate('practiceByTest'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const DeleSectionScreen()),
@@ -160,7 +163,7 @@ class ExamCategoryScreen extends StatelessWidget {
               }
             ),
             (
-              title: 'Escucha guiada (auditiva)',
+              title: strings.translate('listeningGuided'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const ListeningPracticeScreen()),
@@ -168,7 +171,7 @@ class ExamCategoryScreen extends StatelessWidget {
               }
             ),
             (
-              title: 'Reto breve de DELE',
+              title: strings.translate('breveChallenge'),
               onTap: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const DelePracticeScreen(section: 'Comprensión de lectura')),

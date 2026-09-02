@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/exam_type.dart';
 import '../models/question_model.dart';
 import 'mock_exam_screen.dart';
@@ -16,8 +17,11 @@ class MockExamBriefingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
+    final modeLabel = mode.label == 'quick' ? strings.translate('quick') : strings.translate('officialMode');
+
     return Scaffold(
-      appBar: AppBar(title: Text('Mock exam prep: ${mode.label}')),
+      appBar: AppBar(title: Text(strings.translateWith('mockExamPreparation', {'mode': modeLabel}))),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -33,21 +37,21 @@ class MockExamBriefingScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Mode: ${mode.label}', style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                  Text(strings.translateWith('mockMode', {'mode': modeLabel}), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                   const SizedBox(height: 6),
-                  Text('Duration: ${mode.durationMinutes} minutes'),
-                  Text('Questions: ${questions.length}'),
+                  Text(strings.translateWith('mockDuration', {'minutes': mode.durationMinutes.toString()})),
+                  Text(strings.translateWith('mockQuestionCount', {'count': questions.length.toString()})),
                   const SizedBox(height: 6),
-                  const Text('Recommended read: 10–15 seconds before starting.'),
+                  Text(strings.translate('readBeforeStart')),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Quick rules', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(strings.translate('quickRules'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
-            const Text('• You can flag doubtful questions and review them at the end.'),
-            const Text('• Progress is saved automatically during the mock exam.'),
-            const Text('• Before submitting, you will see a final review screen.'),
+            Text(strings.translate('quickRuleFlag')),
+            Text(strings.translate('quickRuleAutosave')),
+            Text(strings.translate('quickRuleReview')),
             const Spacer(),
             SizedBox(
               width: double.infinity,
@@ -64,7 +68,7 @@ class MockExamBriefingScreen extends StatelessWidget {
                   );
                 },
                 icon: const Icon(Icons.play_arrow_rounded),
-                label: const Text('Start mock exam'),
+                label: Text(strings.translate('startMockExam')),
               ),
             ),
           ],

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../models/exam_type.dart';
 import '../models/question_model.dart';
 import '../services/content_service.dart';
@@ -73,8 +74,9 @@ class _MockExamScreenState extends State<MockExamScreen> {
     });
 
     if (restored && mounted) {
+      final strings = AppLocalizations.of(context);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Simulacro reanudado automáticamente.')),
+        SnackBar(content: Text(strings.translate('mockResumed'))),
       );
     }
   }
@@ -202,21 +204,22 @@ class _MockExamScreenState extends State<MockExamScreen> {
 
     if (!mounted) return;
 
+    final strings = AppLocalizations.of(context);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text('Simulacro finalizado'),
+        title: Text(strings.translate('mockExamCompleted')),
         content: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Has respondido ${summary.answeredCount} de ${_questions.length} preguntas.'),
+              Text(strings.translateWith('answeredSummary', {'answered': summary.answeredCount.toString(), 'total': _questions.length.toString()})),
               const SizedBox(height: 8),
-              Text('Aciertos: ${summary.correctCount}'),
-              Text('Fallos: ${summary.incorrectCount}'),
-              Text('Porcentaje: ${summary.percentage.toStringAsFixed(1)}%'),
+              Text(strings.translateWith('correctSummary', {'count': summary.correctCount.toString()})),
+              Text(strings.translateWith('incorrectSummary', {'count': summary.incorrectCount.toString()})),
+              Text(strings.translateWith('percentageSummary', {'value': summary.percentage.toStringAsFixed(1)})),
               const SizedBox(height: 16),
-              const Text('Detalle:', style: TextStyle(fontWeight: FontWeight.w600)),
+              Text(strings.translate('detailLabel'), style: const TextStyle(fontWeight: FontWeight.w600)),
               const SizedBox(height: 8),
               ...summary.results.map((result) {
                 return Padding(
@@ -225,10 +228,10 @@ class _MockExamScreenState extends State<MockExamScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(result.prompt, style: const TextStyle(fontWeight: FontWeight.w600)),
-                      Text('Correcta: ${result.correctAnswerText}'),
-                      Text('Tu respuesta: ${result.selectedAnswerText}'),
-                      Text(result.isCorrect ? '✅ Correcta' : '❌ Incorrecta'),
-                      Text('Explicación: ${result.explanation}'),
+                      Text(strings.translateWith('correctChoiceLabel', {'answer': result.correctAnswerText})),
+                      Text(strings.translateWith('userChoiceLabel', {'answer': result.selectedAnswerText})),
+                      Text(result.isCorrect ? strings.translate('statusCorrect') : strings.translate('statusIncorrect')),
+                      Text(strings.translateWith('explanationLabel', {'text': result.explanation})),
                     ],
                   ),
                 );
@@ -244,7 +247,7 @@ class _MockExamScreenState extends State<MockExamScreen> {
                 Navigator.of(context).popUntil((route) => route.isFirst);
               }
             },
-            child: const Text('Cerrar'),
+            child: Text(strings.translate('close')),
           ),
         ],
       ),
@@ -252,6 +255,7 @@ class _MockExamScreenState extends State<MockExamScreen> {
   }
 
   Future<void> _openFinalReview() async {
+    final strings = AppLocalizations.of(context);
     final unansweredIndexes = <int>[];
     for (var i = 0; i < selectedAnswers.length; i++) {
       if (selectedAnswers[i] == null) {
@@ -270,18 +274,18 @@ class _MockExamScreenState extends State<MockExamScreen> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Revisión final',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                Text(
+                  strings.translate('finalReview'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 8),
-                Text('Sin responder: ${unansweredIndexes.length}'),
-                Text('Marcadas como dudosas: ${flaggedQuestions.length}'),
+                Text('${strings.translate('notAnswered')}: ${unansweredIndexes.length}'),
+                Text('${strings.translate('markedDoubtful')}: ${flaggedQuestions.length}'),
                 const SizedBox(height: 12),
                 if (unansweredIndexes.isEmpty && flaggedQuestions.isEmpty)
-                  const Text('Todo listo para entregar el simulacro.')
+                  Text(strings.translate('readyToSubmit'))
                 else
-                  const Text('Pulsa una pregunta para revisarla antes de entregar.'),
+                  Text(strings.translate('checkBeforeSubmit')),
                 const SizedBox(height: 12),
                 SizedBox(
                   height: 160,
@@ -320,7 +324,7 @@ class _MockExamScreenState extends State<MockExamScreen> {
                     Expanded(
                       child: OutlinedButton(
                         onPressed: () => Navigator.of(sheetContext).pop(),
-                        child: const Text('Seguir revisando'),
+                        child: Text(strings.translate('continueReviewing')),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -330,7 +334,7 @@ class _MockExamScreenState extends State<MockExamScreen> {
                           Navigator.of(sheetContext).pop();
                           _showResults();
                         },
-                        child: const Text('Entregar simulacro'),
+                        child: Text(strings.translate('submitMock')),
                       ),
                     ),
                   ],
@@ -345,9 +349,10 @@ class _MockExamScreenState extends State<MockExamScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     if (isInitializing) {
       return Scaffold(
-        appBar: AppBar(title: Text('Simulacro $_modeLabel CCSE')),
+        appBar: AppBar(title: Text('${strings.translate('mockExam')} $_modeLabel CCSE')),
         body: const Center(child: CircularProgressIndicator()),
       );
     }
@@ -363,16 +368,16 @@ class _MockExamScreenState extends State<MockExamScreen> {
         final shouldExit = await showDialog<bool>(
               context: context,
               builder: (_) => AlertDialog(
-                title: const Text('¿Salir del simulacro?'),
-                content: const Text('Tu progreso quedará guardado automáticamente para reanudar más tarde.'),
+                title: Text(strings.translate('exitMockQuestion')),
+                content: Text(strings.translate('exitMockDescription')),
                 actions: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(false),
-                    child: const Text('Seguir'),
+                    child: Text(strings.translate('stay')),
                   ),
                   ElevatedButton(
                     onPressed: () => Navigator.of(context).pop(true),
-                    child: const Text('Salir'),
+                    child: Text(strings.translate('exit')),
                   ),
                 ],
               ),
@@ -387,7 +392,7 @@ class _MockExamScreenState extends State<MockExamScreen> {
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: Text('Simulacro $_modeLabel CCSE ${currentIndex + 1}/${_questions.length}')),
+        appBar: AppBar(title: Text('${strings.translate('mockExam')} $_modeLabel CCSE ${currentIndex + 1}/${_questions.length}')),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -403,9 +408,9 @@ class _MockExamScreenState extends State<MockExamScreen> {
                 children: [
                   const Icon(Icons.timer_outlined),
                   const SizedBox(width: 8),
-                  Text('Tiempo restante: ${_formatTime(secondsRemaining)}'),
+                  Text('${strings.translate('timeRemaining')}: ${_formatTime(secondsRemaining)}'),
                   const Spacer(),
-                  Text('Respondidas: ${selectedAnswers.where((answer) => answer != null).length}/${_questions.length}'),
+                  Text('${strings.translate('answeredQuestions')}: ${selectedAnswers.where((answer) => answer != null).length}/${_questions.length}'),
                 ],
               ),
             ),

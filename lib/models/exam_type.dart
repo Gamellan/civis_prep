@@ -24,8 +24,8 @@ enum MockExamMode {
 
 extension MockExamModeX on MockExamMode {
   String get label => switch (this) {
-        MockExamMode.quick => 'Rápido',
-        MockExamMode.official => 'Oficial',
+        MockExamMode.quick => 'quick',
+        MockExamMode.official => 'official',
       };
 
   int get questionCount => switch (this) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/study_plan_service.dart';
 import '../services/study_streak_service.dart';
 
@@ -15,10 +16,10 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
   final StudyStreakService _streakService = StudyStreakService();
   final StudyPlanService _studyPlanService = StudyPlanService();
   final List<String> _planItems = [
-    '10 minutos de repaso de preguntas CCSE.',
-    '10 minutos de práctica DELE A2.',
-    '5 minutos de flashcards para reforzar conceptos.',
-    'Finaliza con una reflexión breve sobre lo aprendido.',
+    'studyPlanTask1',
+    'studyPlanTask2',
+    'studyPlanTask3',
+    'studyPlanTask4',
   ];
   final Set<int> _completedIndexes = <int>{};
 
@@ -57,16 +58,17 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     final completedCount = _completedIndexes.length;
     final progressPercentage = _planItems.isEmpty ? 0.0 : completedCount / _planItems.length;
     final progressLabel = progressPercentage >= 1.0
-        ? 'Daily goal completed!'
+        ? strings.translate('dailyGoalCompleted')
         : progressPercentage >= 0.5
-            ? 'Good progress, keep going.'
-            : 'Start with the first task.';
+            ? strings.translate('goodProgress')
+            : strings.translate('startWithFirstTask');
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Study plan')),
+      appBar: AppBar(title: Text(strings.translate('studyPlanTitle'))),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -76,10 +78,10 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
               future: _streakFuture,
               builder: (context, snapshot) {
                 if (!snapshot.hasData) {
-                  return const Card(
+                  return Card(
                     child: Padding(
-                      padding: EdgeInsets.all(16),
-                      child: Text('Loading your streak...'),
+                      padding: const EdgeInsets.all(16),
+                      child: Text(strings.translate('loadingYourStreak')),
                     ),
                   );
                 }
@@ -91,12 +93,12 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Recommended routine', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
+                        Text(strings.translate('recommendedRoutine'), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700)),
                         const SizedBox(height: 8),
-                        Text('Current streak: ${streak.currentStreak} days'),
-                        Text('Best streak: ${streak.bestStreak} days'),
+                        Text(strings.translateWith('currentStreak', {'value': streak.currentStreak.toString()})),
+                        Text(strings.translateWith('bestStreak', {'value': streak.bestStreak.toString()})),
                         const SizedBox(height: 10),
-                        const Text('Weekly summary', style: TextStyle(fontWeight: FontWeight.w700)),
+                        Text(strings.translate('weeklySummary'), style: const TextStyle(fontWeight: FontWeight.w700)),
                         const SizedBox(height: 6),
                         Row(
                           children: List.generate(streak.weeklySummary.length, (index) {
@@ -121,7 +123,7 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
                           }),
                         ),
                         const SizedBox(height: 4),
-                        const Text('A short, realistic plan to stay consistent without overloading yourself.'),
+                        Text(strings.translate('studyRhythmDescription')),
                       ],
                     ),
                   ),
@@ -135,9 +137,9 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('Daily progress', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+                    Text(strings.translate('dailyProgress'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
-                    Text('$completedCount/${_planItems.length} tasks completed'),
+                    Text(strings.translateWith('tasksCompleted', {'completed': completedCount.toString(), 'total': _planItems.length.toString()})),
                     const SizedBox(height: 8),
                     LinearProgressIndicator(
                       value: progressPercentage,
@@ -156,10 +158,10 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Today', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(strings.translate('today'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             ...List.generate(_planItems.length, (index) {
-              final item = _planItems[index];
+              final item = strings.translate(_planItems[index]);
               final completed = _completedIndexes.contains(index);
               return Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -195,7 +197,7 @@ class _StudyPlanScreenState extends State<StudyPlanScreen> {
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Back to home'),
+                child: Text(strings.translate('backToHome')),
               ),
             ),
           ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import '../services/flashcard_service.dart';
 
 class FlashcardsScreen extends StatefulWidget {
@@ -40,9 +41,10 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Flashcards'),
+        title: Text(strings.translate('flashcardsTitle')),
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh_rounded),
@@ -67,13 +69,13 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                   children: [
                     const Icon(Icons.check_circle_outline, size: 52, color: Colors.green),
                     const SizedBox(height: 12),
-                    const Text('Todo está al día', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
+                    Text(strings.translate('allUpToDate'), style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700)),
                     const SizedBox(height: 8),
-                    const Text('No tienes flashcards pendientes por revisar ahora.'),
+                    Text(strings.translate('noPendingFlashcards')),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: _refresh,
-                      child: const Text('Recargar'),
+                      child: Text(strings.translate('reload')),
                     ),
                   ],
                 ),
@@ -91,7 +93,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Tarjeta ${_index + 1}/${cards.length}', style: const TextStyle(fontSize: 14, color: Colors.black54)),
+                Text(strings.translateWith('cardNumber', {'current': (_index + 1).toString(), 'total': cards.length.toString()}), style: const TextStyle(fontSize: 14, color: Colors.black54)),
                 const SizedBox(height: 12),
                 Card(
                   child: Padding(
@@ -109,7 +111,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: () => setState(() => _showAnswer = !_showAnswer),
-                  child: Text(_showAnswer ? 'Ocultar respuesta' : 'Mostrar respuesta'),
+                  child: Text(_showAnswer ? strings.translate('hideAnswer') : strings.translate('showAnswer')),
                 ),
                 const SizedBox(height: 12),
                 Row(
@@ -122,7 +124,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                             _index = (_index + 1) % cards.length;
                           });
                         },
-                        child: const Text('Siguiente'),
+                        child: Text(strings.translate('nextCard')),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -131,7 +133,7 @@ class _FlashcardsScreenState extends State<FlashcardsScreen> {
                         onPressed: () async {
                           await _markMastery(card.id, card.masteryLevel + 1);
                         },
-                        child: const Text('Marcar como recordada'),
+                        child: Text(strings.translate('markAsRemembered')),
                       ),
                     ),
                   ],

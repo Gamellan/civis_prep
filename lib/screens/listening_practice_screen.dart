@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../l10n/app_localizations.dart';
 import 'dele_practice_screen.dart';
 
 class ListeningPracticeScreen extends StatelessWidget {
@@ -7,15 +8,16 @@ class ListeningPracticeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final strings = AppLocalizations.of(context);
     final steps = [
-      'Escucha o lee la frase de apoyo.',
-      'Identifica la intención del hablante.',
-      'Elige la respuesta más adecuada entre las opciones.',
-      'Comprueba la explicación para reforzar el aprendizaje.',
+      strings.translate('listeningStep1'),
+      strings.translate('listeningStep2'),
+      strings.translate('listeningStep3'),
+      strings.translate('listeningStep4'),
     ];
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Comprensión auditiva guiada')),
+      appBar: AppBar(title: Text(strings.translate('comprehensionAuditory'))),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -27,14 +29,12 @@ class ListeningPracticeScreen extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'Práctica simplificada para DELE A2',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                    Text(
+                      strings.translate('practiceSimplified'),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     ),
                     const SizedBox(height: 8),
-                    const Text(
-                      'Como aún no se ha incorporado audio real, esta versión ofrece una experiencia guiada basada en frases y contexto para entrenar la comprensión auditiva.',
-                    ),
+                    Text(strings.translate('audioNoteBody')),
                     const SizedBox(height: 12),
                     Container(
                       padding: const EdgeInsets.all(10),
@@ -60,7 +60,7 @@ class ListeningPracticeScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            const Text('Cómo trabajar esta sección:', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
+            Text(strings.translate('practiceGuide'), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700)),
             const SizedBox(height: 8),
             ...steps.map((step) => Padding(
                   padding: const EdgeInsets.only(bottom: 8),
@@ -82,7 +82,7 @@ class ListeningPracticeScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (_) => const DelePracticeScreen(section: 'Comprensión auditiva')),
                   );
                 },
-                child: const Text('Empezar ejercicios de escucha'),
+                child: Text(strings.translate('startListeningExercises')),
               ),
             ),
           ],
