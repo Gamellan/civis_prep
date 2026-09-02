@@ -27,7 +27,7 @@ android {
         }
     }
 
-    namespace = "com.example.civis_prep"
+    namespace = "com.gamellan.ccseprep"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -39,7 +39,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.civis_prep"
+        applicationId = "com.gamellan.ccseprep"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = flutter.minSdkVersion
